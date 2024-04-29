@@ -20,8 +20,14 @@ export function $onLoad(sr: Registry) {
 }
 
 export function $onShutdown(sr: Registry) {
-  return new Promise<void>((resolve, reject) => {
-    sr.express.server.close((err) => (err ? reject(err) : resolve()));
+  return new Promise<void>((resolve) => {
+    sr.express.server.close((err) => {
+      if (err) {
+        sr.log.warn({ err, message: 'error closing express server' });
+      }
+
+      resolve();
+    });
   });
 }
 
@@ -45,7 +51,7 @@ export class ExpressModule {
         request: { method: req.method },
         response: { status_code: statusCode },
       },
-      message: 'http request error',
+      message: 'http error',
       url: { path: req.url },
     });
 

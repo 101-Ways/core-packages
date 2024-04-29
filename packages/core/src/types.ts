@@ -7,9 +7,17 @@ import type { config } from './modules/config';
 import type { EcsModule } from './modules/ecs';
 import type { UuidModule } from './modules/uuid';
 
+export type Context = {
+  trace: {
+    spanId?: string;
+    traceId?: string;
+    traceparent?: string;
+  };
+};
+
 export type Registry = CoreRegistry & {
   config: typeof config;
-  ctx: CtxModule;
+  ctx: CtxModule<Context>;
   ecs: EcsModule;
   log: Logger;
   uuid: UuidModule;

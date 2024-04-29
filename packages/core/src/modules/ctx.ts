@@ -1,51 +1,33 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import { Registry } from '../types';
-
-type Context = {
-  mongoQueries: Map<
-    number,
-    {
-      cmd: string;
-      collection: unknown;
-      data: unknown;
-      getEvent: ReturnType<Registry['ecs']['makeEventFn']>;
-    }
-  >;
-  trace: {
-    spanId?: string;
-    traceId?: string;
-    traceparent?: string;
-  };
-};
+import { Context, Registry } from '../types';
 
 export function $onBind(sr: Registry) {
   sr.ctx = new CtxModule();
 }
 
-export class CtxModule {
-  als: AsyncLocalStorage<Context>;
+export class CtxModule<T extends Context> {
+  private als: AsyncLocalStorage<unknown>;
 
   constructor() {
-    this.als = new AsyncLocalStorage();
+    this.als = new AsyncLocalStorage<T>();
   }
 
-  get() {
-    return this.als.getStore();
+  get<C extends T>() {
+    return this.als.getStore() as C | undefined;
   }
 
-  getTraceMeta(ctx?: Context) {
-    ctx = ctx || this.get();
-    return ctx
-      ? { trace: { id: ctx.trace.traceId }, span: { id: ctx.trace.spanId } }
-      : {};
+  getTraceMeta() {
+    const ctx = this.get();
+    if (ctx) {
+      return this.toTraceMeta(ctx);
+    }
   }
 
-  make() {
-    const ctx: Context = {
-      mongoQueries: new Map(),
-      trace: {},
-    };
+  toTraceMeta(ctx: T) {
+    return { trace: { id: ctx.trace.traceId }, span: { id: ctx.trace.spanId } };
+  }
 
-    return ctx;
+  run(fn: () => unknown) {
+    this.als.run({ trace: {} }, fn);
   }
 }

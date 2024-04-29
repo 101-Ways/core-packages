@@ -5,6 +5,6 @@ export type { Handler, Request, Response } from 'express';
 export { config } from './modules/config';
 export type { Registry };
 
-export async function load<T extends Registry>(paths: string[] = [], app?: T) {
-  return loadCore([`${__dirname}/modules`, ...paths], app);
+export async function load<T extends Registry>(paths: string[] = [], sr?: T) {
+  return loadCore([`${__dirname}/modules`, ...paths], sr);
 }

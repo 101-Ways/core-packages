@@ -7,8 +7,8 @@ export * from '@101-ways/core-mongo';
 export { config } from './modules/config';
 export type { Registry };
 
-export async function load<T extends Registry>(paths: string[] = [], app?: T) {
-  return loadMongoCore([], app).then((app) =>
-    loadExpressCore([`${__dirname}/modules`, ...paths], app),
+export async function load<T extends Registry>(paths: string[] = [], sr?: T) {
+  return loadMongoCore([], sr).then((sr2) =>
+    loadExpressCore([`${__dirname}/modules`, ...paths], sr2),
   );
 }

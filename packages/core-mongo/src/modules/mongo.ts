@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { Registry } from '../types';
+import { Context, Registry } from '../types';
 
 export async function $onBind(sr: Registry) {
   sr.mongo = new MongoClientModule(sr);
@@ -14,9 +14,11 @@ export class MongoClientModule extends MongoClient {
     super(sr.config.mongo.uri, { monitorCommands: true });
 
     this.on('commandStarted', (ev) => {
-      const ctx = sr.ctx.get();
+      const ctx = sr.ctx.get<Context>();
       if (!ctx) {
         return;
+      } else if (!ctx.mongoQueries) {
+        ctx.mongoQueries = new Map();
       }
 
       ctx.mongoQueries.set(ev.requestId, {
@@ -31,14 +33,18 @@ export class MongoClientModule extends MongoClient {
     });
 
     this.on('commandSucceeded', (ev) => {
-      const ctx = sr.ctx.get();
-      const meta = ctx?.mongoQueries.get(ev.requestId);
+      const ctx = sr.ctx.get<Context>();
+      if (!ctx) {
+        return;
+      }
+
+      const meta = ctx.mongoQueries?.get(ev.requestId);
       if (!meta) {
         return;
       }
 
       sr.log.debug({
-        ...sr.ctx.getTraceMeta(ctx),
+        ...sr.ctx.toTraceMeta(ctx),
         data: meta.data,
         event: {
           ...meta.getEvent('mongo-response'),
@@ -50,14 +56,18 @@ export class MongoClientModule extends MongoClient {
     });
 
     this.on('commandFailed', (ev) => {
-      const ctx = sr.ctx.get();
-      const meta = ctx?.mongoQueries.get(ev.requestId);
+      const ctx = sr.ctx.get<Context>();
+      if (!ctx) {
+        return;
+      }
+
+      const meta = ctx.mongoQueries?.get(ev.requestId);
       if (!meta) {
         return;
       }
 
       sr.log.error({
-        ...sr.ctx.getTraceMeta(ctx),
+        ...sr.ctx.toTraceMeta(ctx),
         data: meta.data,
         error: {
           id: ev.failure.name,

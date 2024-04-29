@@ -7,8 +7,8 @@ const { LOG_LEVEL = 'info' } = process.env;
 
 const pinoOptions: LoggerOptions = {};
 
-export function $onBind(app: Registry) {
-  app.config = config;
+export function $onBind(sr: Registry) {
+  sr.config = config;
 }
 
 export const config = {

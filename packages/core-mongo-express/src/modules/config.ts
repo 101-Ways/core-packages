@@ -3,8 +3,8 @@ import { config as mongoConfig } from '@101-ways/core-mongo';
 
 import { Registry } from '../types';
 
-export function $onBind(app: Registry) {
-  app.config = config;
+export function $onBind(sr: Registry) {
+  sr.config = config;
 }
 
 export const config = {

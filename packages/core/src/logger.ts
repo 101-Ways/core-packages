@@ -4,7 +4,7 @@ import { config } from './modules/config';
 
 const opts = {
   ...config.logger.pinoOptions,
-  ...ecsFormat({}),
+  ...ecsFormat(),
   level: config.logger.level,
 };
 

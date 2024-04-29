@@ -5,8 +5,8 @@ import { Registry } from '../types';
 const { MONGO_DB = 'test', MONGO_URI = 'mongodb://localhost:27017/test' } =
   process.env;
 
-export function $onBind(app: Registry) {
-  app.config = config;
+export function $onBind(sr: Registry) {
+  sr.config = config;
 }
 
 export const config = {

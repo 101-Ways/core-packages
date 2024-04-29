@@ -4,23 +4,18 @@ import type { Registry } from '../../types';
 type GetEventFn = ReturnType<Registry['ecs']['makeEventFn']>;
 
 export function makeLogMiddleware(sr: Registry) {
-  function logRequest(req: Request, trace: Record<string, unknown>) {
+  function logRequest(req: Request) {
     sr.log.debug({
-      ...trace,
+      ...sr.ctx.getTraceMeta(),
       http: { request: { method: req.method } },
       message: 'http request',
       url: { path: req.url },
     });
   }
 
-  function logResponse(
-    req: Request,
-    res: Response,
-    getEvent: GetEventFn,
-    trace: Record<string, unknown>,
-  ) {
+  function logResponse(req: Request, res: Response, getEvent: GetEventFn) {
     sr.log.info({
-      ...trace,
+      ...sr.ctx.getTraceMeta(),
       event: getEvent('http-response'),
       http: {
         request: { method: req.method },
@@ -33,12 +28,11 @@ export function makeLogMiddleware(sr: Registry) {
 
   return (req: Request, res: Response, next: () => void) => {
     const getEvent = sr.ecs.makeEventFn();
-    const trace = sr.ctx.getTraceMeta();
 
-    logRequest(req, trace);
+    logRequest(req);
 
     res.once('finish', () => {
-      logResponse(req, res, getEvent, trace);
+      logResponse(req, res, getEvent);
     });
 
     next();
