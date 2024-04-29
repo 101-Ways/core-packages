@@ -1,0 +1,75 @@
+import { MongoClient } from 'mongodb';
+import { Registry } from '../types';
+
+export async function $onBind(sr: Registry) {
+  sr.mongo = new MongoClientModule(sr);
+}
+
+export async function $onShutdown(sr: Registry) {
+  return sr.mongo.close();
+}
+
+export class MongoClientModule extends MongoClient {
+  constructor(sr: Registry) {
+    super(sr.config.mongo.uri, { monitorCommands: true });
+
+    this.on('commandStarted', (ev) => {
+      const ctx = sr.ctx.get();
+      if (!ctx) {
+        return;
+      }
+
+      ctx.mongoQueries.set(ev.requestId, {
+        cmd: ev.commandName,
+        collection: ev.command[ev.commandName],
+        data: {
+          deletes: ev.command.deletes,
+          filter: ev.command.filter,
+        },
+        getEvent: sr.ecs.makeEventFn(),
+      });
+    });
+
+    this.on('commandSucceeded', (ev) => {
+      const ctx = sr.ctx.get();
+      const meta = ctx?.mongoQueries.get(ev.requestId);
+      if (!meta) {
+        return;
+      }
+
+      sr.log.debug({
+        ...sr.ctx.getTraceMeta(ctx),
+        data: meta.data,
+        event: {
+          ...meta.getEvent('mongo-response'),
+          action: meta.cmd,
+          dataset: meta.collection,
+        },
+        message: 'mongo response',
+      });
+    });
+
+    this.on('commandFailed', (ev) => {
+      const ctx = sr.ctx.get();
+      const meta = ctx?.mongoQueries.get(ev.requestId);
+      if (!meta) {
+        return;
+      }
+
+      sr.log.error({
+        ...sr.ctx.getTraceMeta(ctx),
+        data: meta.data,
+        error: {
+          id: ev.failure.name,
+          message: ev.failure.message,
+        },
+        event: {
+          ...meta.getEvent('mongo-response'),
+          action: meta.cmd,
+          dataset: meta.collection,
+        },
+        message: 'mongo error response',
+      });
+    });
+  }
+}

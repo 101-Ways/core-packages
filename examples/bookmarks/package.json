@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "make lint",
+    "start:dev": "make start-dev",
+    "test": "make test"
+  },
+  "dependencies": {
+    "@101-ways/core-mongo-express": "workspace:^",
+    "tslib": "^2.6.2",
+    "zod": "^3.23.4"
+  },
+  "devDependencies": {
+    "undici": "^6.14.1"
+  },
+  "packageManager": "pnpm@9.0.4+sha512.c374b52de3de88c58fd8333df664a737279cdb0e1344ba4054d3b1fffa9a1a3670854f755dca4f16adea3f14be9896a7fcaf167409fe0c1ad60475271dafe81a"
+}
