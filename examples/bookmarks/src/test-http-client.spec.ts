@@ -44,6 +44,6 @@ export class HttpClient {
   }
 
   private getUrl(path: string) {
-    return `http://localhost:${this.port}${path}`;
+    return `http://127.0.0.1:${this.port}${path}`;
   }
 }

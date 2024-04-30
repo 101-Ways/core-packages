@@ -29,7 +29,7 @@ describe('index', () => {
       res.end('OK');
     });
 
-    const res = await request(`http://localhost:${port}/test`, {
+    const res = await request(`http://127.0.0.1:${port}/test`, {
       method: 'GET',
     });
     strictEqual(res.statusCode, 200);
