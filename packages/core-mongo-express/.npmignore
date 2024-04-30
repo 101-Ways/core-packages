@@ -1,0 +1,4 @@
+coverage
+Makefile
+src
+tsconfig*.json
