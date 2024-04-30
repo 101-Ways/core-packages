@@ -46,8 +46,8 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
       - id: version
-        run: echo "version=$(npm version ${{ github.event.inputs.package }})" >> $GITHUB_OUTPUT
-      - run: git add package.json && git commit -m "publish ${{ github.event.inputs.version }} ${{ steps.version.outputs.version }}"
+        run: echo "version=$(npm version ${{ github.event.inputs.version }})" >> $GITHUB_OUTPUT
+      - run: git add package.json && git commit -m "publish ${{ github.event.inputs.package }} ${{ steps.version.outputs.version }}"
       - run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
