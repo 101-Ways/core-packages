@@ -27,9 +27,8 @@ pnpm test
 ## Configuration environment variable defaults
 
 ```
-HTTP_PORT ='8080'
+HTTP_PORT = '8080'
 LOG_LEVEL = 'info'
-MONGO_DB = 'test'
 MONGO_URI = 'mongodb://localhost:27017/test'
 ```
 
