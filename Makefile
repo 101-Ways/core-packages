@@ -1,9 +1,9 @@
 EXAMPLES := $(shell find examples/* -maxdepth 0 -type d)
 PACKAGES := $(shell find packages/* -maxdepth 0 -type d)
 
-all: build
+all: dist
 
-build clean lint test: node_modules
+dist clean lint test: node_modules
 	for D in $(PACKAGES) $(EXAMPLES); do \
 		cd $$D && make $@ || exit 1; \
 		cd ../..; \

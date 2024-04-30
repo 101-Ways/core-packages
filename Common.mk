@@ -3,7 +3,8 @@ MOCHA_OPTS := --bail
 all: dist
 	
 .PHONY: build
-build: dist
+build:
+	cd ../.. && make dist
 	
 .PHONY: clean
 clean:
@@ -22,7 +23,7 @@ node_modules: package.json
 	test -d $@ && touch $@ || true
 
 .PHONY: test
-test: dist
+test: build
 	cd ../.. && make
 	pnpm c8 --reporter=none ts-mocha $(MOCHA_OPTS) 'src/**/*.spec.ts' \
 		&& pnpm c8 report --all --clean -n src -x 'src/**/*.spec.ts' -x 'src/types.*' --reporter=text
