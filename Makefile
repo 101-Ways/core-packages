@@ -3,7 +3,7 @@ PACKAGES := $(shell find packages/* -maxdepth 0 -type d)
 
 all: build
 
-build lint test: node_modules
+build clean lint test: node_modules
 	for D in $(PACKAGES) $(EXAMPLES); do \
 		cd $$D && make $@ || exit 1; \
 		cd ../..; \

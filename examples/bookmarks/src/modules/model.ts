@@ -10,7 +10,7 @@ export class BookmarkModel {
   collection: Collection;
 
   constructor(private sr: Registry) {
-    this.collection = sr.mongo.db(sr.config.mongo.db).collection('bookmarks');
+    this.collection = sr.mongo.db().collection('bookmarks');
   }
 
   async create(data: CreateBookmarkBody) {

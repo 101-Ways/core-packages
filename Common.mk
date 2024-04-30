@@ -9,7 +9,7 @@ build: dist
 clean:
 	rm -rf coverage dist node_modules
 
-dist: $(TS_FILES) tsconfig.json tsconfig-build.json Makefile
+dist: node_modules $(TS_FILES) tsconfig.json tsconfig-build.json Makefile
 	pnpm tsc -p tsconfig-build.json && touch $@
 
 .PHONY: lint
@@ -22,7 +22,7 @@ node_modules: package.json
 	test -d $@ && touch $@ || true
 
 .PHONY: test
-test:
+test: dist
 	cd ../.. && make
 	pnpm c8 --reporter=none ts-mocha $(MOCHA_OPTS) 'src/**/*.spec.ts' \
 		&& pnpm c8 report --all --clean -n src -x 'src/**/*.spec.ts' -x 'src/types.*' --reporter=text
