@@ -7,7 +7,7 @@ Base package for building accelerator packages. It uses the Service Registry pat
 ```ts
 import { load } from '@101-ways/core';
 
-loadCore([`${__dirname}/modules`]).then((sr) => {
+load([`${__dirname}/modules`]).then((sr) => {
   console.log('SERVICE REGISTRY', sr);
 });
 ```
@@ -26,7 +26,7 @@ export async function load<T extends Registry>(paths: string[] = [], sr?: T) {
 
 ## Service Registry API
 
-- sr.config - configuration ([link](./src/modules/config.ts#14))
+- sr.config - configuration (see [./src/modules/config.ts](./src/modules/config.ts))
 - sr.core - inherited from `@borisovg/service-core` package (see https://github.com/borisovg/node-service-core/blob/main/src/types.ts#L6)
 - sr.ctx - [asynchronous context](https://nodejs.org/api/async_context.html) methods
   - sr.ctx.get() - get current context
