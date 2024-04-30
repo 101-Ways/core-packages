@@ -29,6 +29,8 @@ jobs:
     defaults:
       run:
         working-directory: ./packages/${{ github.event.inputs.package }}
+    permissions:
+      contents: write
     env:
       COREPACK_ENABLE_STRICT: '0'
     steps:
@@ -44,7 +46,7 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
       - run: npm version ${{ github.event.inputs.version }}
-      - run: npm publish
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: git push origin && git push --tags
