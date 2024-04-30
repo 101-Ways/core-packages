@@ -43,3 +43,7 @@ export async function load<T extends Registry>(paths: string[] = [], sr?: T) {
   - sr.log.warn(params)
 - sr.uuid - UUID generation methods
   - sr.uuid.v4() - generate a UUIDv4 string
+
+## Environment Variables
+
+- LOG_LEVEL='info' - controls logging level (see https://github.com/pinojs/pino/blob/main/docs/api.md#level-string for acceptable values)
