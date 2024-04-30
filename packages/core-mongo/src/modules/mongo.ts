@@ -1,8 +1,11 @@
 import { MongoClient } from 'mongodb';
+import { config } from './config';
 import { Context, Registry } from '../types';
 
+type MongoModuleConfig = (typeof config)['mongo'];
+
 export async function $onBind(sr: Registry) {
-  sr.mongo = new MongoClientModule(sr);
+  sr.mongo = new MongoClientModule(sr, config.mongo);
 }
 
 export async function $onShutdown(sr: Registry) {
@@ -10,8 +13,8 @@ export async function $onShutdown(sr: Registry) {
 }
 
 export class MongoClientModule extends MongoClient {
-  constructor(sr: Registry) {
-    super(sr.config.mongo.uri, { monitorCommands: true });
+  constructor(sr: Registry, config: MongoModuleConfig) {
+    super(config.uri, { monitorCommands: true });
 
     this.on('commandStarted', (ev) => {
       const ctx = sr.ctx.get<Context>();
