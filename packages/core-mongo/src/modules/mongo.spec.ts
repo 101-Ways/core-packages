@@ -10,7 +10,7 @@ describe('modules/mongo', () => {
   const sr = {} as Registry;
 
   before(async () => {
-    sandbox.replace(config.mongo, 'uri', `mongodb://localhost:${port}/test`);
+    sandbox.replace(config.mongo, 'uri', `mongodb://127.0.0.1:${port}/test`);
     await load([], sr);
 
     const mongod = await MongoMemoryServer.create({
