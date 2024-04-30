@@ -1,13 +1,16 @@
 MOCHA_OPTS := --bail
 
 all: dist
-
+	
+.PHONY: build
+build: dist
+	
 .PHONY: clean
 clean:
 	rm -rf coverage dist node_modules
 
-dist: node_modules $(TS_FILES) tsconfig.json tsconfig-build.json Makefile
-	pnpm tsc -p tsconfig-build.json
+dist: $(TS_FILES) tsconfig.json tsconfig-build.json Makefile
+	pnpm tsc -p tsconfig-build.json && touch $@
 
 .PHONY: lint
 lint: node_modules
