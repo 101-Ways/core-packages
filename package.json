@@ -1,5 +1,9 @@
 {
   "private": true,
+  "scripts": {
+    "test": "make test",
+    "test:all": "make test"
+  },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.12.7",
